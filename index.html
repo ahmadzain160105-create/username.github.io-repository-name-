@@ -36,15 +36,6 @@
             height: auto;
             border-radius: 10px;
         }
-        .game {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        .game div {
-            width: 45%;
-            min-width: 300px;
-        }
         .memory-board {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -76,6 +67,8 @@
         canvas {
             border: 1px solid #333;
             background-color: #f9f9f9;
+            max-width: 100%;
+            height: auto;
         }
         button {
             padding: 10px 20px;
@@ -96,9 +89,6 @@
             width: 80%;
             max-width: 300px;
         }
-        .hidden {
-            display: none;
-        }
         footer {
             margin-top: 20px;
             font-size: 0.8em;
@@ -106,22 +96,54 @@
         }
         /* Responsiveness tambahan untuk HP dan laptop */
         @media (max-width: 768px) {
-            .game div {
-                width: 100%;
-                min-width: auto;
-            }
             canvas {
                 width: 100%;
                 height: auto;
+                max-width: 300px;
             }
             .memory-board {
-                width: 250px;
+                width: 100%;
+                max-width: 300px;
                 grid-template-columns: repeat(4, 1fr);
             }
             .card {
                 width: 50px;
                 height: 50px;
                 font-size: 20px;
+            }
+            #snake-canvas {
+                width: 250px;
+                height: 250px;
+            }
+            #answer-input {
+                width: 90%;
+                max-width: none;
+            }
+            #question {
+                font-size: 1.1em;
+            }
+        }
+        @media (max-width: 480px) {
+            .memory-board {
+                width: 100%;
+                max-width: 250px;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .card {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            #snake-canvas {
+                width: 200px;
+                height: 200px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+            input {
+                width: 95%;
             }
         }
     </style>
@@ -157,14 +179,7 @@
         <p>HARUS NONTON SAMPEK ABIS!</p>
     </section>
 
-    <section id="games">
-        <h2>Ayuk Main Yuk</h2>
-        <button id="start-memory">Memory Card Game</button>
-        <button id="start-snake">Snake Game</button>
-        <button id="start-riddle">Game Tebak</button>
-    </section>
-
-    <section id="memory-section" class="hidden">
+    <section id="memory-section">
         <h2>Memory Card Game</h2>
         <div id="memory-game">
             <div class="memory-board" id="memory-board">
@@ -172,26 +187,23 @@
             </div>
             <p>Skor: <span id="memory-score">0</span></p>
             <button id="reset-memory">Reset Game</button>
-            <button id="back-to-games-memory">Kembali ke Games</button>
         </div>
     </section>
 
-    <section id="snake-section" class="hidden">
+    <section id="snake-section">
         <h2>Snake Game</h2>
         <canvas id="snake-canvas" width="300" height="300"></canvas>
         <p>Skor: <span id="score">0</span></p>
         <button id="reset-snake">Reset Game</button>
-        <button id="back-to-games-snake">Kembali ke Games</button>
     </section>
 
-    <section id="riddles" class="hidden">
+    <section id="riddles">
         <h2>Game Tebak-Tebakan Lucu</h2>
         <p id="question">Pertanyaan akan muncul di sini.</p>
         <input type="text" id="answer-input" placeholder="Masukkan jawabanmu...">
         <button id="submit-answer">Jawab</button>
         <p id="feedback"></p>
         <p>Skor: <span id="riddle-score">0</span> / 15</p>
-        <button id="back-to-games" class="hidden">Kembali ke Games</button>
     </section>
 
     <footer>
@@ -287,7 +299,7 @@
             gameRunning: false,
 
             init() {
-                this.scoreEl.textContent = this.score; // Pastikan skor 0 saat awal
+                this.scoreEl.textContent = this.score;
                 this.resetBtn.addEventListener('click', () => this.resetGame());
                 this.startGame();
             },
@@ -385,45 +397,21 @@
         const submitBtn = document.getElementById('submit-answer');
         const feedbackEl = document.getElementById('feedback');
         const riddleScoreEl = document.getElementById('riddle-score');
-        const startRiddleBtn = document.getElementById('start-riddle');
-        const backBtn = document.getElementById('back-to-games');
-        const gamesSection = document.getElementById('games');
-        const memorySection = document.getElementById('memory-section');
-        const snakeSection = document.getElementById('snake-section');
-        const riddlesSection = document.getElementById('riddles');
 
-        // Tombol untuk Memory
-        document.getElementById('start-memory').addEventListener('click', () => {
-            gamesSection.classList.add('hidden');
-            memorySection.classList.remove('hidden');
-            memoryGame.init();
-        });
-        document.getElementById('back-to-games-memory').addEventListener('click', () => {
-            memorySection.classList.add('hidden');
-            gamesSection.classList.remove('hidden');
-        });
+        // Fungsi untuk menampilkan riddle
+        function showRiddle() {
+            if (currentRiddleIndex < riddles.length) {
+                questionEl.textContent = riddles[currentRiddleIndex].question;
+                answerInput.value = '';
+                feedbackEl.textContent = '';
+            } else {
+                questionEl.textContent = 'Selamat! Kamu sudah menjawab semua pertanyaan. Skor akhir: ' + riddleScore + '/15. Selamat ulang tahun!';
+                submitBtn.style.display = 'none';
+                answerInput.style.display = 'none';
+            }
+        }
 
-        // Tombol untuk Snake
-        document.getElementById('start-snake').addEventListener('click', () => {
-            gamesSection.classList.add('hidden');
-            snakeSection.classList.remove('hidden');
-            snakeGame.init();
-        });
-        document.getElementById('back-to-games-snake').addEventListener('click', () => {
-            snakeSection.classList.add('hidden');
-            gamesSection.classList.remove('hidden');
-        });
-
-        // Tombol untuk Tebak
-        startRiddleBtn.addEventListener('click', () => {
-            gamesSection.classList.add('hidden');
-            riddlesSection.classList.remove('hidden');
-            currentRiddleIndex = 0;
-            riddleScore = 0;
-            riddleScoreEl.textContent = riddleScore;
-            showRiddle();
-        });
-
+        // Event listener untuk tombol submit jawaban
         submitBtn.addEventListener('click', () => {
             const userAnswer = answerInput.value.trim().toLowerCase();
             const correctAnswer = riddles[currentRiddleIndex].answer.toLowerCase();
@@ -434,5 +422,16 @@
             } else {
                 feedbackEl.textContent = `Salah! Jawaban yang benar: ${riddles[currentRiddleIndex].answer}`;
             }
+            currentRiddleIndex++;
+            setTimeout(() => showRiddle(), 2000);
+        });
 
-            currentRiddleIndex
+        // Inisialisasi game saat halaman load
+        window.addEventListener('load', () => {
+            memoryGame.init();
+            snakeGame.init();
+            showRiddle();
+        });
+    </script>
+</body>
+</html>
