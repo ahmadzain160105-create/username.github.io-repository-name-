@@ -43,27 +43,7 @@ html, body {
     width: 48%;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
-.controls {
-    display: none; /* Sembunyikan tombol kontrol di desktop */
-    margin-top: 10px;
-}
-.controls button {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    margin: 5px;
-    padding: 0; /* Opsional, biar tombol lebih kompak */
-    border: none;
-    background-color: #ff69b4;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.controls button:hover {
-    background-color: #ff1493;
-}
 
-/* Responsiveness: Tampilkan di mobile */
 @media (max-width: 768px) {
     .controls {
         display: flex;
@@ -91,4 +71,5 @@ html, body {
 }
 
 /* Optional:*
+
 
